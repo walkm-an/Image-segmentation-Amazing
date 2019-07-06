@@ -21,11 +21,11 @@ Add additional notes about how to deploy this on a live system
 
 ## Built With
 
-* [Peng Yang] - Cell Nuclei Segmentation
-* [Yao Yuan]  - Superpixel
-* [Jing Gong] - Residual network
-* [Xiangzhuo Meng] - Watershed
-* [Yikai Wang] - U-network
+* [Peng Yang](https://github.com/walkm-an) - Cell Nuclei Segmentation
+* [Yao Yuan](https://github.com/Yyyyyyyao)  - Superpixel
+* [Jing Gong](https://github.com/Iceberg) - Residual network
+* [Xiangzhuo Meng](https://github.com/matthewmeng) - Watershed
+* [Yikai Wang](https://github.com/destniny) - U-network
 
 
 
