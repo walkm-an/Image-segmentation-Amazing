@@ -58,9 +58,12 @@ def draw_grid(im, grid_size):
         cv2.line(im, (0, j), (im.shape[1], j), color=(255,))                
 
 if __name__ == '__main__':
-    img_path = 'data/'
-    mask_path = 'label/'
+    # img_path = 'images/'
+    # mask_path = 'labels/'
             
+    img_path = 'img_pad/'
+    mask_path = 'lab_pad/'
+
     img_list = sorted(os.listdir(img_path))
     mask_list = sorted(os.listdir(mask_path))
     print(img_list)                
@@ -85,14 +88,19 @@ if __name__ == '__main__':
         (mask_shotname, mask_extension) = os.path.splitext(mask_list[i])    
 
 
-        #flip 
+        # !padding 
+        # reflect = cv2.copyMakeBorder(im,363,363,363,363,cv2.BORDER_REFLECT) 
+        # reflect2 = cv2.copyMakeBorder(im_mask,363,363,363,363,cv2.BORDER_REFLECT) 
+        # cv2.imwrite(os.path.join('img_pad/', img_shotname + '-' + str('pad') + img_extension), reflect) 
+        # cv2.imwrite(os.path.join('lab_pad/', mask_shotname + '-' + str('pad') + mask_extension), reflect2)     
+
+        # !flip 
         # horizontal_img = cv2.flip( im, 0 )
         # vertical_img = cv2.flip( im, 1 )
         # both_img = cv2.flip( im, -1 )
         # cv2.imwrite(os.path.join(img_path, img_shotname + '-' + str('hor') + img_extension), horizontal_img) 
         # cv2.imwrite(os.path.join(img_path, img_shotname + '-' + str('ver') + img_extension), vertical_img) 
         # cv2.imwrite(os.path.join(img_path, img_shotname + '-' + str('both') + img_extension), both_img)     
-
         # horizontal_img2 = cv2.flip( im_mask, 0 )
         # vertical_img2 = cv2.flip( im_mask, 1 )
         # both_img2 = cv2.flip( im_mask, -1 )
@@ -100,13 +108,16 @@ if __name__ == '__main__':
         # cv2.imwrite(os.path.join(mask_path, mask_shotname + '-' + str('ver') + mask_extension), vertical_img2) 
         # cv2.imwrite(os.path.join(mask_path, mask_shotname + '-' + str('both') + mask_extension), both_img2)     
 
+        # !rotate
         # for angle in np.arange(0, 180, 30):
         #     rotated_im = imutils.rotate(im, angle)
+        #     crop_im = rotated_im[363:875, 363:875]
         #     rotated_immask = imutils.rotate(im_mask, angle)
-        #     cv2.imwrite(os.path.join(img_path, img_shotname + '-' + str(angle) + img_extension), rotated_im) 
-        #     cv2.imwrite(os.path.join(mask_path, mask_shotname + '-' + str(angle) + mask_extension), rotated_immask)       
+        #     crop_im2 = rotated_immask[363:875, 363:875]
+        #     cv2.imwrite(os.path.join(img_path, img_shotname + '-' + str(angle) + img_extension), crop_im) 
+        #     cv2.imwrite(os.path.join(mask_path, mask_shotname + '-' + str(angle) + mask_extension), crop_im2)       
 
-        # Elastic deformation 10 times
+        # !Elastic deformation 11 times
         count = 0                
         while count < 11:
     
