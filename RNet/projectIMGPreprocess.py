@@ -1,10 +1,8 @@
 # -*- coding:utf-8 -*-
 """
-@author:TanQingBo
-@file:elastic_transform.py
-@time:2018/10/1221:56
+
 """
-# Import stuff
+
 import os
 import numpy as np
 import pandas as pd
@@ -27,30 +25,26 @@ def elastic_transform(image, alpha, sigma, alpha_affine, random_state=None):
         random_state = np.random.RandomState(None)
 
     shape = image.shape
-    shape_size = shape[:2]   #(512,512)表示图像的尺寸                
+    shape_size = shape[:2]   #(512,512) size             
     # Random affine
     center_square = np.float32(shape_size) // 2
     square_size = min(shape_size) // 3
-    # pts1为变换前的坐标，pts2为变换后的坐标，范围为什么是center_square+-square_size？
-    # 其中center_square是图像的中心，square_size=512//3=170
+
     pts1 = np.float32([center_square + square_size, [center_square[0] + square_size, center_square[1] - square_size],
                        center_square - square_size])
     pts2 = pts1 + random_state.uniform(-alpha_affine, alpha_affine, size=pts1.shape).astype(np.float32)
-    # Mat getAffineTransform(InputArray src, InputArray dst)  src表示输入的三个点，dst表示输出的三个点，获取变换矩阵M
-    M = cv2.getAffineTransform(pts1, pts2)  #获取变换矩阵
-    #默认使用 双线性插值，
+
+    M = cv2.getAffineTransform(pts1, pts2)  
+  
     image = cv2.warpAffine(image, M, shape_size[::-1], borderMode=cv2.BORDER_REFLECT_101)
 
-    # # random_state.rand(*shape) 会产生一个和 shape 一样打的服从[0,1]均匀分布的矩阵
-    # * 2 - 1 是为了将分布平移到 [-1, 1] 的区间
-    # 对random_state.rand(*shape)做高斯卷积，没有对图像做高斯卷积，为什么？因为论文上这样操作的
-    # 高斯卷积原理可参考：https://blog.csdn.net/sunmc1204953974/article/details/50634652
-    # 实际上 dx 和 dy 就是在计算论文中弹性变换的那三步：产生一个随机的位移，将卷积核作用在上面，用 alpha 决定尺度的大小
+
+
     dx = gaussian_filter((random_state.rand(*shape) * 2 - 1), sigma) * alpha
     dy = gaussian_filter((random_state.rand(*shape) * 2 - 1), sigma) * alpha
-    dz = np.zeros_like(dx)  #构造一个尺寸与dx相同的O矩阵                
-    # np.meshgrid 生成网格点坐标矩阵，并在生成的网格点坐标矩阵上加上刚刚的到的dx dy
-    x, y, z = np.meshgrid(np.arange(shape[1]), np.arange(shape[0]), np.arange(shape[2]))  #网格采样点函数
+    dz = np.zeros_like(dx)                
+
+    x, y, z = np.meshgrid(np.arange(shape[1]), np.arange(shape[0]), np.arange(shape[2]))  
     indices = np.reshape(y + dy, (-1, 1)), np.reshape(x + dx, (-1, 1)), np.reshape(z, (-1, 1))
     # indices = np.reshape(y+dy, (-1, 1)), np.reshape(x+dx, (-1, 1)), np.reshape(z, (-1, 1))                
     return map_coordinates(image, indices, order=1, mode='reflect').reshape(shape)                
@@ -66,8 +60,7 @@ def draw_grid(im, grid_size):
 if __name__ == '__main__':
     img_path = 'data/'
     mask_path = 'label/'
-    # img_path =  '/home/changzhang/ liubo_workspace/tmp_for_test/img'
-    # mask_path = '/home/changzhang/liubo_workspace/tmp_for_test/mask'                
+            
     img_list = sorted(os.listdir(img_path))
     mask_list = sorted(os.listdir(mask_path))
     print(img_list)                
@@ -79,7 +72,7 @@ if __name__ == '__main__':
     print (mask_num)              
     count_total = 0
     for i in range(img_num):
-        print(os.path.join(img_path, img_list[i]))   #将路径和文件名合成一个整体
+        print(os.path.join(img_path, img_list[i]))   
         im = cv2.imread(os.path.join(img_path, img_list[i]), -1)
         im_mask = cv2.imread(os.path.join(mask_path, mask_list[i]), -1)                
         # # Draw grid lines
@@ -116,7 +109,7 @@ if __name__ == '__main__':
         # Elastic deformation 10 times
         count = 0                
         while count < 11:
-            # Apply transformation on image  im_merge.shape[1]表示图像中像素点的个数
+    
             im_merge_t = elastic_transform(im_merge, im_merge.shape[1] * 2, im_merge.shape[1] * 0.08,
                                            im_merge.shape[1] * 0.08)
 
